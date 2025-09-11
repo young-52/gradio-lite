@@ -10,7 +10,7 @@ This is a frozen copy of the gradio repo, in the state it was in at the final re
 
 `@gradio/lite` is no longer being maintained but this repo ensures the source remains available to the community in case anyone wishes to use it in any way.
 
-`lite` was pretty tightly integrated into gradio itself, sharing much of the python and backend code but most of the gradio specific code is in:
+`lite` was pretty tightly integrated into gradio itself, sharing much of the backend and frontend code, but most of the lite specific code is in:
 
 - `js/lite`
 - `js/wasm`
