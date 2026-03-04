@@ -46,16 +46,19 @@ export function patchRequirements(
 	// XXX: `micropip` sometimes doesn't resolve the dependency version correctly.
 	// So we explicitly specify the version here for some packages.
 
-	if (requirements.some((req) => isAltair(pyodide, req))) {
-		// Plotly 6.x doesn't work work Altair on Pyodide 0.27.2.
-		// Ref: https://github.com/gradio-app/gradio/issues/10458
-		return requirements.map((req) => {
-			if (isPlotly6(pyodide, req)) {
-				return `plotly==5.*`;
-			}
-			return req;
-		});
+	// Add explicit versions for problematic packages in Pyodide 0.27.3
+	const patched = requirements.map((req) => {
+		if (isAltair(pyodide, req) && isPlotly6(pyodide, req)) {
+			// Plotly 6.x doesn't work work Altair on Pyodide 0.27.2.
+			// Ref: https://github.com/gradio-app/gradio/issues/10458
+			return `plotly==5.*`;
+		}
+		return req;
+	});
+
+	if (patched.some(req => req.includes("gradio"))) {
+		patched.push("pydantic<2.11", "huggingface-hub==0.34.1");
 	}
 
-	return requirements;
+	return patched;
 }
