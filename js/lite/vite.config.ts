@@ -47,11 +47,22 @@ const client_version_raw = JSON.parse(
 const client_python_version = convert_to_pypi_prerelease(client_version_raw);
 
 const gradio_wheel_path = (() => {
+	const universal_wheel_pattern = `../../dist-lite/gradio-${python_version}-py3-none-any.whl`;
+	const universal_matches = glob.sync(universal_wheel_pattern, {
+		cwd: __dirname
+	});
+
+	if (universal_matches.length > 0) {
+		return resolve(__dirname, universal_matches[0]);
+	}
+
 	const wheelPattern = `../../dist-lite/gradio-${python_version}-cp3*-none-any.whl`;
 	const matches = glob.sync(wheelPattern, { cwd: __dirname });
 
 	if (matches.length === 0) {
-		throw new Error(`No wheel file found matching pattern: ${wheelPattern}`);
+		throw new Error(
+			`No wheel file found matching pattern: ${universal_wheel_pattern} or ${wheelPattern}`
+		);
 	}
 
 	return resolve(__dirname, matches[0]);
@@ -189,7 +200,7 @@ export default defineConfig(({ mode }) => {
 					: ["**/*.test.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
 			exclude: ["**/node_modules/**", "**/gradio/gradio/**"],
 			globals: true,
-			onConsoleLog(log, type) {
+			onConsoleLog(log: string, type: string) {
 				if (log.includes("was created with unknown prop")) return false;
 			}
 		},
