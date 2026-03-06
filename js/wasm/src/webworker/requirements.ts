@@ -46,7 +46,7 @@ export function patchRequirements(
 	// XXX: `micropip` sometimes doesn't resolve the dependency version correctly.
 	// So we explicitly specify the version here for some packages.
 
-	// Add explicit versions for problematic packages in Pyodide 0.27.3
+	// Add explicit versions for problematic packages in Pyodide 0.27.5
 	const patched = requirements.map((req) => {
 		if (isAltair(pyodide, req) && isPlotly6(pyodide, req)) {
 			// Plotly 6.x doesn't work work Altair on Pyodide 0.27.2.
